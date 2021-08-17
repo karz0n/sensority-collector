@@ -1,11 +1,15 @@
-# -------------------------------------------------------------------------------
+set(TARGET ${PROJECT_NAME})
 
-set(TARGET_NAME ${PROJECT_NAME}-app)
+add_executable(${TARGET} "")
 
-# -------------------------------------------------------------------------------
-# Target Configuration
-# -------------------------------------------------------------------------------
+target_sources(
+    ${TARGET} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/SensorityApplication.hpp"
+                      "${CMAKE_CURRENT_LIST_DIR}/SensorityApplication.cpp"
+)
 
-add_executable(${TARGET_NAME} "")
+target_link_libraries(
+    ${TARGET} Poco::Util SensorityCollector::Storage SensorityCollector::Connectivity
+)
 
-target_sources(${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/main.cpp)
+add_subdirectory(connectivity)
+add_subdirectory(storage)

@@ -21,3 +21,6 @@ if(SC_ENABLE_TESTS)
 else()
     message(STATUS "Building without tests")
 endif()
+
+include(AddPoco)
+include(AddMosquitto)
