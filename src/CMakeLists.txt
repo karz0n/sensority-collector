@@ -11,5 +11,6 @@ target_link_libraries(
     ${TARGET} Poco::Util SensorityCollector::Storage SensorityCollector::Connectivity
 )
 
+add_subdirectory(common)
 add_subdirectory(connectivity)
 add_subdirectory(storage)

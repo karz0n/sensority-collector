@@ -4,7 +4,10 @@ cmake_minimum_required(VERSION 3.8)
 # Project Declaration
 # -------------------------------------------------------------------------------
 
-project(sensority-collector)
+project(sensority-collector
+    VERSION 0.1
+    DESCRIPTION "Sensority collector service"
+)
 
 # -------------------------------------------------------------------------------
 # Project Configuration

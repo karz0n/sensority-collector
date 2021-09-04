@@ -11,7 +11,7 @@ target_sources(
 
 set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME ${TARGET})
 
-target_link_libraries(${TARGET} PUBLIC Poco::Util)
+target_link_libraries(${TARGET} PUBLIC SensorityCollector::Common Poco::Util)
 
 target_include_directories(
         ${TARGET}

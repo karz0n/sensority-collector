@@ -10,11 +10,13 @@
 #include "SensorityApplication.hpp"
 
 #include <Poco/Util/HelpFormatter.h>
+#include <Poco/Util/LoggingSubsystem.h>
 
 #include "storage/StorageSubsystem.hpp"
 #include "connectivity/ConnectivitySubsystem.hpp"
 
 using Poco::Util::Application;
+using Poco::Util::LoggingSubsystem;
 using Poco::Util::OptionSet;
 using Poco::Util::Option;
 using Poco::Util::OptionCallback;
@@ -33,6 +35,7 @@ SensorityApplication::initialize(Application& self)
 {
     loadConfiguration();
 
+    addSubsystem(new LoggingSubsystem);
     addSubsystem(new StorageSubsystem);
     addSubsystem(new ConnectivitySubsystem);
 

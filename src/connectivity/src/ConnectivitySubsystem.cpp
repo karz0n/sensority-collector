@@ -9,6 +9,8 @@
 
 #include "connectivity/ConnectivitySubsystem.hpp"
 
+using Poco::Util::Application;
+
 namespace connectivity {
 
 const char*
@@ -18,7 +20,7 @@ ConnectivitySubsystem::name() const
 }
 
 void
-ConnectivitySubsystem::initialize(Poco::Util::Application&)
+ConnectivitySubsystem::initialize(Application&)
 {
 }
 
