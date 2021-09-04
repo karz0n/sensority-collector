@@ -24,3 +24,4 @@ endif()
 
 include(AddPoco)
 include(AddMosquitto)
+include(AddBoost)

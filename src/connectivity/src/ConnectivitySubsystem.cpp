@@ -9,6 +9,8 @@
 
 #include "connectivity/ConnectivitySubsystem.hpp"
 
+#include "common/Logger.hpp"
+
 using Poco::Util::Application;
 
 namespace connectivity {
@@ -22,11 +24,13 @@ ConnectivitySubsystem::name() const
 void
 ConnectivitySubsystem::initialize(Application&)
 {
+    LOG_INFO("ConnectivitySubsystem::initialize");
 }
 
 void
 ConnectivitySubsystem::uninitialize()
 {
+    LOG_INFO("ConnectivitySubsystem::uninitialize");
 }
 
 } // namespace connectivity
