@@ -404,10 +404,11 @@ MqttClient::onMessage(MqttContext*, void* const object, const mosquitto_message*
     poco_check_ptr(object);
     MqttClient& client = *static_cast<MqttClient*>(object);
 
-    MqttMessage messageOut;
-    convert(message, messageOut);
-
-    client.emitMessageSignal(messageOut);
+    if (message->payload != nullptr && message->payloadlen > 0) {
+        MqttMessage messageOut;
+        convert(message, messageOut);
+        client.emitMessageSignal(messageOut);
+    }
 }
 
 void

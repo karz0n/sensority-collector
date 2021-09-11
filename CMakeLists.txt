@@ -4,7 +4,8 @@ cmake_minimum_required(VERSION 3.8)
 # Project Declaration
 # -------------------------------------------------------------------------------
 
-project(sensority-collector
+project(
+    sensority-collector
     VERSION 0.1
     DESCRIPTION "Sensority collector service"
 )
@@ -21,6 +22,4 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/ProjectConfigs.cmake)
 # -------------------------------------------------------------------------------
 
 add_subdirectory(src)
-if(SC_ENABLE_TESTS)
-    add_subdirectory(test)
-endif()
+add_subdirectory(tools)

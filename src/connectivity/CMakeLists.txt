@@ -28,3 +28,8 @@ target_include_directories(
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include> ${PROJECT_OUTPUT_DIR}
     PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src
 )
+
+if(SC_ENABLE_TESTS)
+    add_subdirectory(test/common)
+    add_subdirectory(test/unit)
+endif()

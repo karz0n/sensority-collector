@@ -36,10 +36,6 @@ public:
     connected() const noexcept = 0;
 
     virtual void
-    reinitialise(const std::string& id, bool cleanSession)
-        = 0;
-
-    virtual void
     connect(const std::string& host, unsigned short port, int keepalive)
         = 0;
 

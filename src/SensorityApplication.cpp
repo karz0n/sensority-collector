@@ -15,6 +15,8 @@
 #include "storage/StorageSubsystem.hpp"
 #include "connectivity/ConnectivitySubsystem.hpp"
 
+#include <iostream>
+
 using Poco::Util::Application;
 using Poco::Util::LoggingSubsystem;
 using Poco::Util::OptionSet;

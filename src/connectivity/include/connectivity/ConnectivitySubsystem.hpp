@@ -11,12 +11,18 @@
 
 #include <Poco/Util/Subsystem.h>
 
+#include "connectivity/IMqttClient.hpp"
+
 namespace connectivity {
 
 class ConnectivitySubsystem final : public Poco::Util::Subsystem {
 public:
+    ConnectivitySubsystem();
+
     const char*
     name() const override;
+
+    IMqttClient::Ptr mqttClient();
 
 private:
     void
@@ -24,6 +30,9 @@ private:
 
     void
     uninitialize() override;
+
+private:
+    IMqttClient::Ptr _mqttClient;
 };
 
 } // namespace connectivity

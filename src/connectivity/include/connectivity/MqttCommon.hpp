@@ -45,27 +45,13 @@ enum class MqttConnectionStatusCodes {
     Unknown
 };
 
-enum class MqttVerificationRequirements {
-    None,
-    Peer
-};
+enum class MqttVerificationRequirements { None, Peer };
 
-enum class MqttTransportLayerVersions {
-    v1,
-    v11,
-    v12
-};
+enum class MqttTransportLayerVersions { v1, v11, v12 };
 
-enum class MqttQoS {
-    v0 = 0,
-    v1,
-    v2
-};
+enum class MqttQoS { v0 = 0, v1, v2 };
 
-enum class MqttProtocolVersion {
-    v31,
-    v311
-};
+enum class MqttProtocolVersion { v31, v311 };
 
 using MqttContext = mosquitto;
 
@@ -75,13 +61,21 @@ struct MqttMessage {
     std::vector<std::uint8_t> payload;
     int qos{0};
     bool retain{false};
+
+    [[nodiscard]] bool
+    empty() const
+    {
+        return payload.empty();
+    }
 };
 
 using MqttGrantedQoS = std::vector<int>;
 
-std::string stringifyErrorCode(int errorCode);
+std::string
+stringifyErrorCode(int errorCode);
 
-std::string stringifyConnAckCode(int connAckCode);
+std::string
+stringifyConnAckCode(int connAckCode);
 
 void
 convert(int from, MqttLogLevel& to);
