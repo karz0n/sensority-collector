@@ -11,9 +11,10 @@ include(BuildType)
 if(SC_ENABLE_TESTS)
     enable_testing()
     include(AddGoogleTest)
-    message(STATUS "Building with tests")
-else()
-    message(STATUS "Building without tests")
+endif()
+
+if (SC_CODE_FORMAT)
+    include(CodeFormat)
 endif()
 
 include(AddPoco)

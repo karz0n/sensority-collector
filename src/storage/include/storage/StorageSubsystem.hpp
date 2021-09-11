@@ -17,12 +17,15 @@ namespace storage {
 
 class StorageSubsystem final : public Poco::Util::Subsystem {
 public:
-    const char* name() const override;
+    const char*
+    name() const override;
 
 private:
-    void initialize(Poco::Util::Application& app) override;
+    void
+    initialize(Poco::Util::Application& app) override;
 
-    void uninitialize() override;
+    void
+    uninitialize() override;
 
 private:
     DataObserver::Ptr _tempDataObserver;
@@ -35,4 +38,4 @@ private:
     DataObserver::Ptr _tvocDataObserver;
 };
 
-}
+} // namespace storage

@@ -16,7 +16,8 @@ MqttInitializer::~MqttInitializer()
     uninitialize();
 }
 
-bool MqttInitializer::initialize() noexcept
+bool
+MqttInitializer::initialize() noexcept
 {
     poco_assert_dbg(!_initialized);
     if (_initialized) {
@@ -34,7 +35,8 @@ bool MqttInitializer::initialize() noexcept
     return false;
 }
 
-void MqttInitializer::uninitialize() noexcept
+void
+MqttInitializer::uninitialize() noexcept
 {
     if (_initialized) {
         mosquitto_lib_cleanup();

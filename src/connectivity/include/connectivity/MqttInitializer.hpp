@@ -8,9 +8,11 @@ public:
 
     ~MqttInitializer();
 
-    bool initialize() noexcept;
+    bool
+    initialize() noexcept;
 
-    void uninitialize() noexcept;
+    void
+    uninitialize() noexcept;
 
 private:
     bool _initialized;

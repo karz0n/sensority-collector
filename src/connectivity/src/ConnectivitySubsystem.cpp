@@ -27,7 +27,8 @@ ConnectivitySubsystem::name() const
     return "ConnectivitySubsystem";
 }
 
-IMqttClient::Ptr ConnectivitySubsystem::mqttClient()
+IMqttClient::Ptr
+ConnectivitySubsystem::mqttClient()
 {
     return _mqttClient;
 }

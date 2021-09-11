@@ -22,7 +22,8 @@ public:
     const char*
     name() const override;
 
-    IMqttClient::Ptr mqttClient();
+    IMqttClient::Ptr
+    mqttClient();
 
 private:
     void

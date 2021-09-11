@@ -7,7 +7,9 @@ public:
     TestApplication() = default;
 
 private:
-    void initialize(Poco::Util::Application& self) override;
+    void
+    initialize(Poco::Util::Application& self) override;
 
-    int main(const std::vector<std::string>& args) override;
+    int
+    main(const std::vector<std::string>& args) override;
 };

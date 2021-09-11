@@ -16,16 +16,21 @@ public:
     SensorityApplication();
 
 private:
-    void initialize(Poco::Util::Application& self) override;
+    void
+    initialize(Poco::Util::Application& self) override;
 
-    void defineOptions(Poco::Util::OptionSet& options) override;
+    void
+    defineOptions(Poco::Util::OptionSet& options) override;
 
-    int main(const std::vector<std::string>& args) override;
+    int
+    main(const std::vector<std::string>& args) override;
 
 private:
-    void handleHelp(const std::string& name, const std::string& value);
+    void
+    handleHelp(const std::string& name, const std::string& value);
 
-    void displayHelp();
+    void
+    displayHelp();
 
 private:
     bool _helpRequested;
