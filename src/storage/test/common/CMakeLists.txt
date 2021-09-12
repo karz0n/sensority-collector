@@ -3,7 +3,11 @@ set(TARGET ${PROJECT_NAME}-storage-test-common)
 add_library(${TARGET} "")
 add_library("SensorityCollector::Storage::Test::Common" ALIAS ${TARGET})
 
-target_sources(${TARGET} PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include/storage/MockDataWriter.hpp")
+target_sources(
+    ${TARGET}
+    PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include/storage/MockDataWriter.hpp"
+           "${CMAKE_CURRENT_LIST_DIR}/include/storage/MockDataObserver.hpp"
+)
 
 set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME ${TARGET})
 

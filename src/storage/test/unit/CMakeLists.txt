@@ -3,8 +3,10 @@ set(TARGET ${PROJECT_NAME}-storage-test)
 add_executable(${TARGET} "")
 
 target_sources(
-    ${TARGET} PUBLIC "${CMAKE_CURRENT_LIST_DIR}/src/DataObserverTest.cpp"
-                     "${CMAKE_CURRENT_LIST_DIR}/src/DataWriterTest.cpp"
+    ${TARGET}
+    PUBLIC "${CMAKE_CURRENT_LIST_DIR}/src/SensorDataObserverTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/DataWriterTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/CompositeDataObserverTest.cpp"
 )
 
 set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME ${TARGET})

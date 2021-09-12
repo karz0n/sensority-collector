@@ -7,10 +7,14 @@ target_sources(
     ${TARGET}
     PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include/storage/StorageSubsystem.hpp"
            "${CMAKE_CURRENT_LIST_DIR}/include/storage/DataObserver.hpp"
+           "${CMAKE_CURRENT_LIST_DIR}/include/storage/SensorDataObserver.hpp"
            "${CMAKE_CURRENT_LIST_DIR}/include/storage/DataWriter.hpp"
+           "${CMAKE_CURRENT_LIST_DIR}/include/storage/CompositeDataObserver.hpp"
     PRIVATE "${CMAKE_CURRENT_LIST_DIR}/src/StorageSubsystem.cpp"
             "${CMAKE_CURRENT_LIST_DIR}/src/DataObserver.cpp"
+            "${CMAKE_CURRENT_LIST_DIR}/src/SensorDataObserver.cpp"
             "${CMAKE_CURRENT_LIST_DIR}/src/DataWriter.cpp"
+            "${CMAKE_CURRENT_LIST_DIR}/src/CompositeDataObserver.cpp"
 )
 
 set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME ${TARGET})

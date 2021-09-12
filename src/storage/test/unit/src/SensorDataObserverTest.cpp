@@ -4,20 +4,20 @@
 #include "connectivity/MockMqttClient.hpp"
 #include "storage/MockDataWriter.hpp"
 
-#include "storage/DataObserver.hpp"
+#include "storage/SensorDataObserver.hpp"
 
 using namespace testing;
 using namespace connectivity;
 using namespace storage;
 
-class DataObserverTest : public Test {
+class SensorDataObserverTest : public Test {
 public:
     static constexpr std::string_view TopicName{"temperature"};
 
-    DataObserverTest()
+    SensorDataObserverTest()
         : writer{std::make_shared<NiceMock<MockDataWriter>>()}
         , client{std::make_shared<NiceMock<MockMqttClient>>()}
-        , observer{DataObserver::create(client, std::string{TopicName}, writer)}
+        , observer{SensorDataObserver::create(client, std::string{TopicName}, writer)}
     {
     }
 
@@ -36,10 +36,10 @@ public:
 public:
     MockDataWriter::Ptr writer;
     MockMqttClient::Ptr client;
-    DataObserver::Ptr observer;
+    SensorDataObserver::Ptr observer;
 };
 
-TEST_F(DataObserverTest, SubscribeUnsubscribe)
+TEST_F(SensorDataObserverTest, SubscribeUnsubscribe)
 {
     const int messageId = 1;
 
@@ -47,15 +47,13 @@ TEST_F(DataObserverTest, SubscribeUnsubscribe)
     EXPECT_CALL(*client, subscribe).WillOnce(Return(messageId));
     observer->subscribe();
     client->triggerSubscribe(messageId);
-    EXPECT_TRUE(observer->subscribed());
 
     EXPECT_CALL(*client, unsubscribe).WillOnce(Return(messageId));
     observer->unsubscribe();
     client->triggerUnsubscribe(messageId);
-    EXPECT_FALSE(observer->subscribed());
 }
 
-TEST_F(DataObserverTest, WriteData)
+TEST_F(SensorDataObserverTest, WriteData)
 {
     const int messageId = 1;
     const std::string_view value{R"({"value:": 25.1, "raw": 26.2 })"};
@@ -64,7 +62,6 @@ TEST_F(DataObserverTest, WriteData)
     EXPECT_CALL(*client, subscribe).WillOnce(Return(messageId));
     observer->subscribe();
     client->triggerSubscribe(messageId);
-    ASSERT_TRUE(observer->subscribed());
 
     MqttMessage message;
     message.id = 1;
