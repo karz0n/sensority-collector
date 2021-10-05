@@ -3,50 +3,28 @@
 #include "connectivity/MqttCommon.hpp"
 #include "common/Logger.hpp"
 
-#include <Poco/JSON/Parser.h>
-
-using Poco::JSON::Parser;
-using Poco::JSON::Object;
-
 using namespace connectivity;
-
-namespace {
-
-Object::Ptr
-toJsonObject(const std::string& data)
-{
-    static Parser parser;
-    try {
-        const auto var = parser.parse(data);
-        if (!var.isEmpty()) {
-            return var.extract<Object::Ptr>();
-        }
-        parser.reset();
-    } catch (...) {
-        // Suppress exceptions
-    }
-    return Object::Ptr{};
-}
-
-} // namespace
 
 namespace storage {
 
 SensorDataObserver::Ptr
 SensorDataObserver::create(connectivity::IMqttClient::Ptr client,
+                           IDataStorage::Ptr storage,
                            std::string topic,
-                           IDataWriter::Ptr dataWriter)
+                           IDataWriter::Ptr writer)
 {
-    return std::shared_ptr<SensorDataObserver>(
-        new SensorDataObserver{std::move(client), std::move(topic), std::move(dataWriter)});
+    return std::shared_ptr<SensorDataObserver>(new SensorDataObserver{
+        std::move(client), std::move(storage), std::move(topic), std::move(writer)});
 }
 
 SensorDataObserver::SensorDataObserver(IMqttClient::Ptr client,
+                                       IDataStorage::Ptr storage,
                                        std::string topic,
-                                       IDataWriter::Ptr dataWriter)
+                                       IDataWriter::Ptr writer)
     : _client{std::move(client)}
     , _topic{std::move(topic)}
-    , _dataWriter{std::move(dataWriter)}
+    , _writer{std::move(writer)}
+    , _storage{std::move(storage)}
     , _messageId{InvalidMessageId}
     , _needSubscribe{false}
     , _subscribed{false}
@@ -159,10 +137,10 @@ void
 SensorDataObserver::onMessage(const MqttMessage& message)
 {
     if (message.topic == _topic) {
-        const std::string data{reinterpret_cast<const char*>(message.payload.data()),
-                               message.payload.size()};
-        if (auto object = toJsonObject(data)) {
-            _dataWriter->process(object);
+        const std::string input{reinterpret_cast<const char*>(message.payload.data()),
+                                message.payload.size()};
+        if (auto writer = _writer->clone(); writer->parse(input)) {
+            _storage->process(std::move(writer));
         }
     }
 }

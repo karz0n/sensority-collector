@@ -5,8 +5,15 @@ add_executable(${TARGET} "")
 target_sources(
     ${TARGET}
     PUBLIC "${CMAKE_CURRENT_LIST_DIR}/src/SensorDataObserverTest.cpp"
-           "${CMAKE_CURRENT_LIST_DIR}/src/DataWriterTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/CompositeDataObserverTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/TemperatureDataTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/Co2DataTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/EvocDataTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/GasDataTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/HumidityDataTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/IaqDataTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/PressureDataTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/TvocDataTest.cpp"
 )
 
 set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME ${TARGET})

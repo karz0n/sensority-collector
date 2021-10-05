@@ -1,6 +1,6 @@
 #pragma once
 
-#include "storage/DataWriter.hpp"
+#include "storage/IDataWriter.hpp"
 
 #include <gmock/gmock.h>
 
@@ -12,7 +12,11 @@ class MockDataWriter : public IDataWriter {
 public:
     using Ptr = std::shared_ptr<MockDataWriter>;
 
-    MOCK_METHOD(void, process, (Poco::JSON::Object::Ptr), (override));
+    MOCK_METHOD(bool, parse, (const std::string& input), (override));
+
+    MOCK_METHOD(void, access, (Poco::Data::Session&), (override));
+
+    MOCK_METHOD(IDataWriter::Ptr, clone, (), (override));
 };
 
 } // namespace storage

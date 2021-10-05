@@ -11,7 +11,8 @@
 
 #include <Poco/Util/Subsystem.h>
 
-#include "storage/CompositeDataObserver.hpp"
+#include "storage/DataObserver.hpp"
+#include "storage/DataStorage.hpp"
 
 namespace storage {
 
@@ -28,7 +29,8 @@ private:
     uninitialize() override;
 
 private:
-    CompositeDataObserver _observer;
+    DataStorage::Ptr _storage;
+    DataObserver::Ptr _observer;
 };
 
 } // namespace storage

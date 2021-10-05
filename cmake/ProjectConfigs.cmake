@@ -20,3 +20,7 @@ endif()
 include(AddPoco)
 include(AddMosquitto)
 include(AddBoost)
+
+if (DEFINED CMAKE_TOOLCHAIN_FILE)
+    message(STATUS "Using toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
+endif()

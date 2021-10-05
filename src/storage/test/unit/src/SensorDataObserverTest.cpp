@@ -3,6 +3,7 @@
 
 #include "connectivity/MockMqttClient.hpp"
 #include "storage/MockDataWriter.hpp"
+#include "storage/MockDataStorage.hpp"
 
 #include "storage/SensorDataObserver.hpp"
 
@@ -17,7 +18,8 @@ public:
     SensorDataObserverTest()
         : writer{std::make_shared<NiceMock<MockDataWriter>>()}
         , client{std::make_shared<NiceMock<MockMqttClient>>()}
-        , observer{SensorDataObserver::create(client, std::string{TopicName}, writer)}
+        , storage{std::make_shared<NiceMock<MockDataStorage>>()}
+        , observer{SensorDataObserver::create(client, storage, std::string{TopicName}, writer)}
     {
     }
 
@@ -36,6 +38,7 @@ public:
 public:
     MockDataWriter::Ptr writer;
     MockMqttClient::Ptr client;
+    MockDataStorage::Ptr storage;
     SensorDataObserver::Ptr observer;
 };
 
@@ -68,6 +71,9 @@ TEST_F(SensorDataObserverTest, WriteData)
     message.topic = TopicName;
     message.payload.assign(value.cbegin(), value.cend());
 
-    EXPECT_CALL(*writer, process(NotNull()));
+    MockDataWriter::Ptr writerClone = std::make_shared<MockDataWriter>();
+    EXPECT_CALL(*writerClone, parse);
+    EXPECT_CALL(*writer, clone).WillOnce(Return(writerClone));
+
     client->triggerMessage(message);
 }
