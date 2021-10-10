@@ -27,20 +27,20 @@ public:
 
 TEST_F(CompositeDataObserverTest, Initialize)
 {
-    EXPECT_CALL(*tailObserver1, initialize);
-    EXPECT_CALL(*tailObserver2, initialize);
-    EXPECT_CALL(*tailObserver3, initialize);
+    EXPECT_CALL(*tailObserver1, setUp);
+    EXPECT_CALL(*tailObserver2, setUp);
+    EXPECT_CALL(*tailObserver3, setUp);
 
-    observer.initialize();
+    observer.setUp();
 }
 
 TEST_F(CompositeDataObserverTest, Uninitialize)
 {
-    EXPECT_CALL(*tailObserver1, uninitialize);
-    EXPECT_CALL(*tailObserver2, uninitialize);
-    EXPECT_CALL(*tailObserver3, uninitialize);
+    EXPECT_CALL(*tailObserver1, tearDown);
+    EXPECT_CALL(*tailObserver2, tearDown);
+    EXPECT_CALL(*tailObserver3, tearDown);
 
-    observer.uninitialize();
+    observer.tearDown();
 }
 
 TEST_F(CompositeDataObserverTest, Subscribe)

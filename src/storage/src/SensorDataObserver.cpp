@@ -1,6 +1,5 @@
 #include "storage/SensorDataObserver.hpp"
 
-#include "connectivity/MqttCommon.hpp"
 #include "common/Logger.hpp"
 
 using namespace connectivity;
@@ -25,14 +24,11 @@ SensorDataObserver::SensorDataObserver(IMqttClient::Ptr client,
     , _topic{std::move(topic)}
     , _writer{std::move(writer)}
     , _storage{std::move(storage)}
-    , _messageId{InvalidMessageId}
-    , _needSubscribe{false}
-    , _subscribed{false}
 {
 }
 
 void
-SensorDataObserver::initialize()
+SensorDataObserver::setUp()
 {
     _onSubscribeCon = _client->onSubscribe([weakSelf = weak_from_this()](int mid, const auto&) {
         if (auto self = weakSelf.lock()) {
@@ -66,7 +62,7 @@ SensorDataObserver::initialize()
 }
 
 void
-SensorDataObserver::uninitialize()
+SensorDataObserver::tearDown()
 {
     try {
         _onSubscribeCon.disconnect();
@@ -83,9 +79,9 @@ void
 SensorDataObserver::subscribe()
 {
     if (_client->connected()) {
-        _messageId = _client->subscribe(_topic, MqttQoS::v1);
+        _mid = _client->subscribe(_topic, MqttQoS::v1);
     } else {
-        _needSubscribe = true;
+        _subscribe = true;
     }
 }
 
@@ -93,14 +89,14 @@ void
 SensorDataObserver::unsubscribe()
 {
     if (_subscribed) {
-        _messageId = _client->unsubscribe(_topic);
+        _mid = _client->unsubscribe(_topic);
     }
 }
 
 void
 SensorDataObserver::onConnect()
 {
-    if (_needSubscribe) {
+    if (_subscribe) {
         subscribe();
     }
 }
@@ -109,27 +105,27 @@ void
 SensorDataObserver::onDisconnect()
 {
     if (_subscribed && !_client->durable()) {
-        _needSubscribe = true;
+        _subscribe = true;
     }
 }
 
 void
 SensorDataObserver::onSubscribe(const int messageId)
 {
-    if (messageId == _messageId) {
-        _needSubscribe = false;
+    if (messageId == _mid) {
+        _subscribe = false;
         _subscribed = true;
-        _messageId = InvalidMessageId;
+        _mid = InvalidMessageId;
     }
 }
 
 void
 SensorDataObserver::onUnsubscribe(const int messageId)
 {
-    if (messageId == _messageId) {
-        _needSubscribe = false;
+    if (messageId == _mid) {
+        _subscribe = false;
         _subscribed = false;
-        _messageId = InvalidMessageId;
+        _mid = InvalidMessageId;
     }
 }
 

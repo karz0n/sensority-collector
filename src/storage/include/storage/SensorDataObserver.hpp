@@ -25,10 +25,10 @@ public:
            IDataWriter::Ptr dataWriter);
 
     void
-    initialize() override;
+    setUp() override;
 
     void
-    uninitialize() override;
+    tearDown() override;
 
     void
     subscribe() override;
@@ -63,15 +63,15 @@ private:
     IDataWriter::Ptr _writer;
     IDataStorage::Ptr _storage;
 
-    std::atomic<int> _messageId;
-    std::atomic<bool> _needSubscribe;
-    std::atomic<bool> _subscribed;
+    std::atomic<int> _mid{connectivity::InvalidMessageId};
+    std::atomic<bool> _subscribe{false};
+    std::atomic<bool> _subscribed{false};
 
-    bs::connection _onConnectCon;
-    bs::connection _onDisconnectCon;
-    bs::connection _onSubscribeCon;
-    bs::connection _onUnsubscribeCon;
-    bs::connection _onMessageCon;
+    bs::scoped_connection _onConnectCon;
+    bs::scoped_connection _onDisconnectCon;
+    bs::scoped_connection _onSubscribeCon;
+    bs::scoped_connection _onUnsubscribeCon;
+    bs::scoped_connection _onMessageCon;
 };
 
 } // namespace storage

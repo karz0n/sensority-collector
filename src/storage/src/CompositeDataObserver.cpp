@@ -3,18 +3,18 @@
 namespace storage {
 
 void
-CompositeDataObserver::initialize()
+CompositeDataObserver::setUp()
 {
     for (auto&& observer : _observers) {
-        observer->initialize();
+        observer->setUp();
     }
 }
 
 void
-CompositeDataObserver::uninitialize()
+CompositeDataObserver::tearDown()
 {
     for (auto&& observer : _observers) {
-        observer->uninitialize();
+        observer->tearDown();
     }
 }
 

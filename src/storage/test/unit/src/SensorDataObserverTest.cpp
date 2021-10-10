@@ -26,13 +26,13 @@ public:
     void
     SetUp() override
     {
-        observer->initialize();
+        observer->setUp();
     }
 
     void
     TearDown() override
     {
-        observer->uninitialize();
+        observer->tearDown();
     }
 
 public:

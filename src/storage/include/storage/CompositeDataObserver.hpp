@@ -10,10 +10,10 @@ namespace storage {
 class CompositeDataObserver : public DataObserver {
 public:
     void
-    initialize() override;
+    setUp() override;
 
     void
-    uninitialize() override;
+    tearDown() override;
 
     void
     subscribe() override;

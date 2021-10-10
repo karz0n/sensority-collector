@@ -48,7 +48,7 @@ StorageSubsystem::initialize(Application& app)
     poco_assert_dbg(client);
     _observer = configureObservers(client, app.config());
     poco_assert_dbg(_observer);
-    _observer->initialize();
+    _observer->setUp();
     _observer->subscribe();
 }
 
@@ -61,7 +61,7 @@ StorageSubsystem::uninitialize()
 
     if (_observer) {
         _observer->unsubscribe();
-        _observer->uninitialize();
+        _observer->tearDown();
     }
 }
 
