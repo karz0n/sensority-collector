@@ -21,7 +21,7 @@ set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME ${TARGET})
 target_link_libraries(
     ${TARGET}
     PUBLIC SensorityCollector::Storage SensorityCollector::Storage::Test::Common
-           SensorityCollector::Connectivity::Test::Common SensorityCollector::Tools::Tests
+           SensorityCollector::Connectivity::Test::Common SensorityCollector::Tests
 )
 
 target_include_directories(
@@ -29,3 +29,5 @@ target_include_directories(
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
     PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src
 )
+
+gtest_enable(TARGET ${TARGET} DIRECTORY ${PROJECT_OUTPUT_DIR})

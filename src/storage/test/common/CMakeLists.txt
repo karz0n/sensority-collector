@@ -12,7 +12,7 @@ target_sources(
 
 set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME ${TARGET})
 
-target_link_libraries(${TARGET} PUBLIC SensorityCollector::Storage SensorityCollector::Tools::Tests)
+target_link_libraries(${TARGET} PUBLIC SensorityCollector::Storage SensorityCollector::Tests)
 
 target_include_directories(
     ${TARGET}

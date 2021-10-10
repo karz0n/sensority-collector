@@ -1,7 +1,7 @@
-set(TARGET ${PROJECT_NAME}-tools-tests)
+set(TARGET ${PROJECT_NAME}-tests)
 
 add_library(${TARGET} "")
-add_library("SensorityCollector::Tools::Tests" ALIAS ${TARGET})
+add_library("SensorityCollector::Tests" ALIAS ${TARGET})
 
 target_sources(
     ${TARGET} PUBLIC "${CMAKE_CURRENT_LIST_DIR}/src/TestApplication.hpp"
