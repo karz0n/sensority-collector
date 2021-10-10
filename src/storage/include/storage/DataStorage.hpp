@@ -17,19 +17,19 @@ public:
     ~DataStorage() override;
 
     void
-    initialize() override;
+    setUp() override;
 
     void
-    uninitialize() override;
+    tearDown() override;
 
     std::future<bool>
     process(IDataAccessor::Ptr accessor) override;
 
     static void
-    setUp();
+    initialize();
 
     static void
-    tearDown();
+    uninitialize();
 
 private:
     struct Task {

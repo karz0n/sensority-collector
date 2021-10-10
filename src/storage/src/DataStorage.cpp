@@ -45,7 +45,7 @@ DataStorage::~DataStorage()
 }
 
 void
-DataStorage::initialize()
+DataStorage::setUp()
 {
     if (_thread.joinable()) {
         throw Poco::RuntimeException{""};
@@ -64,7 +64,7 @@ DataStorage::initialize()
 }
 
 void
-DataStorage::uninitialize()
+DataStorage::tearDown()
 {
     terminate();
 }
@@ -81,13 +81,13 @@ DataStorage::process(IDataAccessor::Ptr accessor)
 }
 
 void
-DataStorage::setUp()
+DataStorage::initialize()
 {
     Poco::Data::SQLite::Connector::registerConnector();
 }
 
 void
-DataStorage::tearDown()
+DataStorage::uninitialize()
 {
     Poco::Data::SQLite::Connector::unregisterConnector();
 }

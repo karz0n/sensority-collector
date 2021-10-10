@@ -10,9 +10,11 @@
 #pragma once
 
 #include <Poco/Util/Subsystem.h>
+#include <Poco/Util/AbstractConfiguration.h>
 
 #include "storage/DataObserver.hpp"
 #include "storage/DataStorage.hpp"
+#include "connectivity/IMqttClient.hpp"
 
 namespace storage {
 
@@ -21,12 +23,17 @@ public:
     const char*
     name() const override;
 
-private:
+private: /* Poco::Util::Subsystem interface */
     void
     initialize(Poco::Util::Application& app) override;
 
     void
     uninitialize() override;
+
+private:
+    DataObserver::Ptr
+    configureObservers(connectivity::IMqttClient::Ptr client,
+                       const Poco::Util::AbstractConfiguration& config);
 
 private:
     DataStorage::Ptr _storage;

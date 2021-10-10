@@ -21,6 +21,7 @@ MqttInitializer::initialize() noexcept
 {
     poco_assert_dbg(!_initialized);
     if (_initialized) {
+        LOG_ERROR("Mqtt has already initialized");
         return true;
     }
 

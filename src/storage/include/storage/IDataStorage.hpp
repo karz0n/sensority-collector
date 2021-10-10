@@ -16,11 +16,11 @@ public:
     virtual ~IDataStorage() = default;
 
     virtual void
-    initialize()
+    setUp()
         = 0;
 
     virtual void
-    uninitialize()
+    tearDown()
         = 0;
 
     virtual std::future<bool>

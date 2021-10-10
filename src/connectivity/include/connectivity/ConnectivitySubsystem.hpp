@@ -25,12 +25,15 @@ public:
     IMqttClient::Ptr
     mqttClient();
 
-private:
+private: /* Poco::Util::Subsystem interface */
     void
     initialize(Poco::Util::Application&) override;
 
     void
     uninitialize() override;
+
+private:
+    void connectServer();
 
 private:
     IMqttClient::Ptr _mqttClient;

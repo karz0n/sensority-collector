@@ -1,8 +1,1 @@
-//
-// Created by denys on 9/13/21.
-//
-
-#ifndef SENSORITY_COLLECTOR_UTILS_HPP
-#define SENSORITY_COLLECTOR_UTILS_HPP
-
-#endif // SENSORITY_COLLECTOR_UTILS_HPP
+#pragma once

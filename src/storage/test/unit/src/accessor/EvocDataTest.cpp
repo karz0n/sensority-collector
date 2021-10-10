@@ -14,25 +14,25 @@ public:
     void
     SetUp() override
     {
-        storage.initialize();
+        storage.setUp();
     }
 
     void
     TearDown() override
     {
-        storage.uninitialize();
+        storage.tearDown();
     }
 
     static void
     SetUpTestSuite()
     {
-        DataStorage::setUp();
+        DataStorage::initialize();
     }
 
     static void
     TearDownTestSuite()
     {
-        DataStorage::tearDown();
+        DataStorage::uninitialize();
     }
 
 public:
