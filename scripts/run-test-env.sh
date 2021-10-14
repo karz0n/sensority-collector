@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CWDIR=$(dirname $(dirname $(realpath -s $0)))
-IMAGE=my/sensority-dev-image
+IMAGE=my/sensority-dev
 
 command -v docker > /dev/null
 if [ $? != 0 ]
