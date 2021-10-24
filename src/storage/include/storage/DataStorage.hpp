@@ -22,27 +22,14 @@ public:
     void
     tearDown() override;
 
-    std::future<bool>
-    process(IDataAccessor::Ptr accessor) override;
+    void
+    process(IDataJob::Ptr job) override;
 
     static void
     initialize();
 
     static void
     uninitialize();
-
-private:
-    struct Task {
-        explicit Task(IDataAccessor::Ptr accessor)
-            : accessor{std::move(accessor)}
-        {
-        }
-
-        IDataAccessor::Ptr accessor;
-        std::promise<bool> done;
-    };
-
-    using Tasks = std::queue<Task>;
 
 private:
     void
@@ -53,11 +40,11 @@ private:
 
 private:
     Poco::Data::Session _session;
-    Tasks _tasks;
     std::thread _thread;
     std::mutex _mutex;
     std::condition_variable _cv;
-    std::atomic<bool> _terminate;
+    std::atomic<bool> _active;
+    std::queue<IDataJob::Ptr> _jobs;
 };
 
 } // namespace storage

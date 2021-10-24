@@ -1,6 +1,6 @@
 #pragma once
 
-#include "storage/IDataAccessor.hpp"
+#include "storage/IDataJob.hpp"
 
 #include <memory>
 #include <future>
@@ -23,8 +23,9 @@ public:
     tearDown()
         = 0;
 
-    virtual std::future<bool>
-    process(IDataAccessor::Ptr accessor) = 0;
+    virtual void
+    process(IDataJob::Ptr job)
+        = 0;
 
 protected:
     IDataStorage(const IDataStorage&) = default;

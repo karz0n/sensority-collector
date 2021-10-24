@@ -1,7 +1,7 @@
 #pragma once
 
 #include "connectivity/IMqttClient.hpp"
-#include "storage/IDataWriter.hpp"
+#include "storage/DataAccessor.hpp"
 #include "storage/IDataStorage.hpp"
 #include "storage/DataObserver.hpp"
 
@@ -19,10 +19,7 @@ class SensorDataObserver final : public DataObserver,
                                  public std::enable_shared_from_this<SensorDataObserver> {
 public:
     static Ptr
-    create(connectivity::IMqttClient::Ptr client,
-           IDataStorage::Ptr storage,
-           std::string topic,
-           IDataWriter::Ptr dataWriter);
+    create(connectivity::IMqttClient::Ptr client, std::string topic, DataAccessor::Ptr accessor);
 
     void
     setUp() override;
@@ -38,9 +35,8 @@ public:
 
 private:
     SensorDataObserver(connectivity::IMqttClient::Ptr client,
-                       IDataStorage::Ptr storage,
                        std::string topic,
-                       IDataWriter::Ptr dataWriter);
+                       DataAccessor::Ptr accessor);
 
     void
     onConnect();
@@ -60,7 +56,7 @@ private:
 private:
     connectivity::IMqttClient::Ptr _client;
     const std::string _topic;
-    IDataWriter::Ptr _writer;
+    DataAccessor::Ptr _accessor;
     IDataStorage::Ptr _storage;
 
     std::atomic<int> _mid{connectivity::InvalidMessageId};

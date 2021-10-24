@@ -2,7 +2,7 @@
 #include <gmock/gmock.h>
 
 #include "connectivity/MockMqttClient.hpp"
-#include "storage/MockDataWriter.hpp"
+#include "storage/MockDataAccessor.hpp"
 #include "storage/MockDataStorage.hpp"
 
 #include "storage/SensorDataObserver.hpp"
@@ -16,10 +16,9 @@ public:
     static constexpr std::string_view TopicName{"temperature"};
 
     SensorDataObserverTest()
-        : writer{std::make_shared<NiceMock<MockDataWriter>>()}
+        : accessor{std::make_shared<NiceMock<MockDataAccessor>>()}
         , client{std::make_shared<NiceMock<MockMqttClient>>()}
-        , storage{std::make_shared<NiceMock<MockDataStorage>>()}
-        , observer{SensorDataObserver::create(client, storage, std::string{TopicName}, writer)}
+        , observer{SensorDataObserver::create(client, std::string{TopicName}, accessor)}
     {
     }
 
@@ -36,9 +35,8 @@ public:
     }
 
 public:
-    MockDataWriter::Ptr writer;
+    MockDataAccessor::Ptr accessor;
     MockMqttClient::Ptr client;
-    MockDataStorage::Ptr storage;
     SensorDataObserver::Ptr observer;
 };
 
@@ -59,7 +57,7 @@ TEST_F(SensorDataObserverTest, SubscribeUnsubscribe)
 TEST_F(SensorDataObserverTest, WriteData)
 {
     const int messageId = 1;
-    const std::string_view value{R"({"value:": 25.1, "raw": 26.2 })"};
+    const std::string_view value{R"([{"value:": 25.1, "raw": 26.2 }])"};
 
     EXPECT_CALL(*client, connected).WillOnce(Return(true));
     EXPECT_CALL(*client, subscribe).WillOnce(Return(messageId));
@@ -71,9 +69,7 @@ TEST_F(SensorDataObserverTest, WriteData)
     message.topic = TopicName;
     message.payload.assign(value.cbegin(), value.cend());
 
-    MockDataWriter::Ptr writerClone = std::make_shared<MockDataWriter>();
-    EXPECT_CALL(*writerClone, parse);
-    EXPECT_CALL(*writer, clone).WillOnce(Return(writerClone));
+    EXPECT_CALL(*accessor, put);
 
     client->triggerMessage(message);
 }

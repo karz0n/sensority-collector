@@ -1,41 +1,46 @@
 #include "storage/DataStorage.hpp"
 
+#include "common/Logger.hpp"
+
 #include <Poco/Data/SQLite/Connector.h>
+
+using Poco::Data::Statement;
+using Poco::Data::Connector;
 
 using namespace Poco::Data::Keywords;
 
 // clang-format off
-static const std::string_view TemperatureDefinition{
-    "CREATE TABLE IF NOT EXISTS TemperatureData (Value REAL, Raw REAL, Timestamp INTEGER)"
+static const std::string_view TempDataDefinition{
+    "CREATE TABLE IF NOT EXISTS TempData (Value REAL,Raw REAL,Timestamp INTEGER)"
 };
-static const std::string_view HumidityDefinition{
-    "CREATE TABLE IF NOT EXISTS HumidityData (Value REAL, Raw REAL, Timestamp INTEGER)"
+static const std::string_view HumidityDataDefinition{
+    "CREATE TABLE IF NOT EXISTS HumidityData (Value REAL,Raw REAL,Timestamp INTEGER)"
 };
-static const std::string_view PressureDefinition{
-    "CREATE TABLE IF NOT EXISTS PressureData (Value REAL, Timestamp INTEGER)"
+static const std::string_view PressureDataDefinition{
+    "CREATE TABLE IF NOT EXISTS PressureData (Value REAL,Timestamp INTEGER)"
 };
-static const std::string_view IaqDefinition{
-    "CREATE TABLE IF NOT EXISTS IaqData (Value REAL, Raw REAL, Accuracy REAL, Timestamp INTEGER)"
+static const std::string_view IaqDataDefinition{
+    "CREATE TABLE IF NOT EXISTS IaqData (Value REAL,Accuracy REAL,StaticValue REAL,StaticValueAccuracy REAL,Timestamp INTEGER)"
 };
-static const std::string_view GasDefinition {
-    "CREATE TABLE IF NOT EXISTS GasData (Value REAL, Timestamp INTEGER)"
+static const std::string_view GasDataDefinition {
+    "CREATE TABLE IF NOT EXISTS GasData (Value REAL,Percentage REAL,PercentageAccuracy REAL,Timestamp INTEGER)"
 };
-static const std::string_view Co2Definition {
-    "CREATE TABLE IF NOT EXISTS Co2Data (Value REAL, Accuracy REAL, Equivalent REAL, Timestamp INTEGER)"
+static const std::string_view eCo2DataDefinition {
+    "CREATE TABLE IF NOT EXISTS eCo2Data (Equivalent REAL,Accuracy REAL,Timestamp INTEGER)"
 };
-static const std::string_view EvocDefinition {
-    "CREATE TABLE IF NOT EXISTS EvocData (Value REAL, Accuracy REAL, Equivalent REAL, Timestamp INTEGER)"
+static const std::string_view eBreathVocDataDefinition {
+    "CREATE TABLE IF NOT EXISTS eBreathVocData (Equivalent REAL,Accuracy REAL,Timestamp INTEGER)"
 };
-static const std::string_view TvocDefinition {
-    "CREATE TABLE IF NOT EXISTS TvocData (Value REAL, Timestamp INTEGER)"
+static const std::string_view TvocDataDefinition {
+    "CREATE TABLE IF NOT EXISTS TvocData (Value REAL,Timestamp INTEGER)"
 };
 // clang-format on
 
 namespace storage {
 
 DataStorage::DataStorage(const std::string& connectionString)
-    : _session{"SQLite", connectionString}
-    , _terminate{false}
+    : _session{Poco::Data::SQLite::Connector::KEY, connectionString}
+    , _active{false}
 {
 }
 
@@ -47,19 +52,20 @@ DataStorage::~DataStorage()
 void
 DataStorage::setUp()
 {
-    if (_thread.joinable()) {
-        throw Poco::RuntimeException{""};
+    if (_active) {
+        throw Poco::RuntimeException{"Thread is already active"};
     }
 
-    _session << TemperatureDefinition, now;
-    _session << HumidityDefinition, now;
-    _session << PressureDefinition, now;
-    _session << IaqDefinition, now;
-    _session << GasDefinition, now;
-    _session << Co2Definition, now;
-    _session << EvocDefinition, now;
-    _session << TvocDefinition, now;
+    _session << TempDataDefinition, now;
+    _session << HumidityDataDefinition, now;
+    _session << PressureDataDefinition, now;
+    _session << IaqDataDefinition, now;
+    _session << GasDataDefinition, now;
+    _session << eCo2DataDefinition, now;
+    _session << eBreathVocDataDefinition, now;
+    _session << TvocDataDefinition, now;
 
+    _active = true;
     _thread = std::thread(&DataStorage::loop, this);
 }
 
@@ -69,15 +75,13 @@ DataStorage::tearDown()
     terminate();
 }
 
-std::future<bool>
-DataStorage::process(IDataAccessor::Ptr accessor)
+void
+DataStorage::process(IDataJob::Ptr job)
 {
     std::unique_lock lock{_mutex};
-    _tasks.emplace(std::move(accessor));
-    auto output = _tasks.back().done.get_future();
+    _jobs.emplace(std::move(job));
     lock.unlock();
     _cv.notify_one();
-    return output;
 }
 
 void
@@ -95,26 +99,21 @@ DataStorage::uninitialize()
 void
 DataStorage::loop()
 {
-    while (!_terminate) {
+    while (_active) {
         std::unique_lock lock{_mutex};
-        _cv.wait(lock, [this]() { return _terminate || !_tasks.empty(); });
-        if (_terminate) {
+        _cv.wait(lock, [this]() { return !_active || !_jobs.empty(); });
+        if (!_active) {
             break;
         }
 
-        while (!_tasks.empty()) {
-            auto& task = _tasks.front();
+        while (!_jobs.empty()) {
+            auto& job = _jobs.front();
             try {
-                task.accessor->access(_session);
-                task.done.set_value(true);
-            } catch (...) {
-                try {
-                    task.done.set_exception(std::current_exception());
-                } catch (...) {
-                    // Suppress exception
-                }
+                job->run(_session);
+            } catch (const std::exception& e) {
+                LOG_ERROR(e.what());
             }
-            _tasks.pop();
+            _jobs.pop();
         }
     }
 }
@@ -122,12 +121,12 @@ DataStorage::loop()
 void
 DataStorage::terminate()
 {
-    if (!_thread.joinable()) {
+    if (!_active) {
         return;
     }
 
     std::unique_lock lock{_mutex};
-    _terminate = true;
+    _active = false;
     lock.unlock();
     _cv.notify_one();
 

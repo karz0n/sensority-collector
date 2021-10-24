@@ -16,7 +16,7 @@ public:
 
     MOCK_METHOD(void, tearDown, (), (override));
 
-    MOCK_METHOD(std::future<bool>, process, (IDataAccessor::Ptr), (override));
+    MOCK_METHOD(void, process, (IDataJob::Ptr), (override));
 };
 
 } // namespace storage

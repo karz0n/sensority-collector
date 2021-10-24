@@ -8,22 +8,19 @@ namespace storage {
 
 SensorDataObserver::Ptr
 SensorDataObserver::create(connectivity::IMqttClient::Ptr client,
-                           IDataStorage::Ptr storage,
                            std::string topic,
-                           IDataWriter::Ptr writer)
+                           DataAccessor::Ptr accessor)
 {
-    return std::shared_ptr<SensorDataObserver>(new SensorDataObserver{
-        std::move(client), std::move(storage), std::move(topic), std::move(writer)});
+    return std::shared_ptr<SensorDataObserver>(
+        new SensorDataObserver{std::move(client), std::move(topic), std::move(accessor)});
 }
 
 SensorDataObserver::SensorDataObserver(IMqttClient::Ptr client,
-                                       IDataStorage::Ptr storage,
                                        std::string topic,
-                                       IDataWriter::Ptr writer)
+                                       DataAccessor::Ptr accessor)
     : _client{std::move(client)}
     , _topic{std::move(topic)}
-    , _writer{std::move(writer)}
-    , _storage{std::move(storage)}
+    , _accessor{std::move(accessor)}
 {
 }
 
@@ -135,9 +132,7 @@ SensorDataObserver::onMessage(const MqttMessage& message)
     if (message.topic == _topic) {
         const std::string input{reinterpret_cast<const char*>(message.payload.data()),
                                 message.payload.size()};
-        if (auto writer = _writer->clone(); writer->parse(input)) {
-            _storage->process(std::move(writer));
-        }
+        _accessor->put(input, nullptr);
     }
 }
 
