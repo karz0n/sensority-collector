@@ -13,14 +13,12 @@
 #include "common/Logger.hpp"
 #include "connectivity/MqttClient.hpp"
 
-#include <string>
-
 using Poco::Util::Application;
 
 namespace connectivity {
 
 ConnectivitySubsystem::ConnectivitySubsystem()
-    : _mqttClient{std::make_shared<MqttClient>(false)}
+    : _mqttClient{std::make_shared<MqttClient>()}
 {
 }
 
