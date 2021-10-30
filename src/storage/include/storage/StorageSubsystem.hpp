@@ -32,7 +32,7 @@ private: /* Poco::Util::Subsystem interface */
 
 private:
     DataObserver::Ptr
-    configureObservers(connectivity::IMqttClient::Ptr client,
+    configureObservers(const connectivity::IMqttClient::Ptr& client,
                        const Poco::Util::AbstractConfiguration& config);
 
 private:

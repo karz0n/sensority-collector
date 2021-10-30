@@ -71,7 +71,8 @@ StorageSubsystem::uninitialize()
 }
 
 DataObserver::Ptr
-StorageSubsystem::configureObservers(IMqttClient::Ptr client, const AbstractConfiguration& config)
+StorageSubsystem::configureObservers(const IMqttClient::Ptr& client,
+                                     const AbstractConfiguration& config)
 {
     auto observer = std::make_shared<CompositeDataObserver>();
 
