@@ -21,5 +21,6 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/ProjectConfigs.cmake)
 # Structure Configuration
 # -------------------------------------------------------------------------------
 
+add_subdirectory(config)
 add_subdirectory(src)
 add_subdirectory(tools)

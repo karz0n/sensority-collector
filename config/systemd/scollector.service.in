@@ -1,0 +1,18 @@
+[Unit]
+Description=Sensority Collector Service
+Wants=network.target
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/scollector --pidfile=/var/run/scollector.pid
+
+Restart=on-failure
+RestartSec=3s
+
+UMask=0007
+User=@SC_SYSTEMD_USER@
+Group=@SC_SYSTEMD_GROUP@
+
+[Install]
+WantedBy=basic.target
