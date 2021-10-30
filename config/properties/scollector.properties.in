@@ -1,11 +1,13 @@
 
+database.path = @SC_DATABASE_PATH@
+
 server.username = test
 server.password = test
 server.host = 192.168.1.10
 server.port = 1883
 server.secure = true
 
-# The list of available topics
+# Setup list of topics
 data.topics.topic1 = temperature
 data.topics.topic2 = pressure
 data.topics.topic3 = gas

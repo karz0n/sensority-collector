@@ -12,8 +12,8 @@
 #include <Poco/Util/Subsystem.h>
 #include <Poco/Util/AbstractConfiguration.h>
 
+#include "storage/IDataStorage.hpp"
 #include "storage/DataObserver.hpp"
-#include "storage/DataStorage.hpp"
 #include "connectivity/IMqttClient.hpp"
 
 namespace storage {
@@ -31,12 +31,15 @@ private: /* Poco::Util::Subsystem interface */
     uninitialize() override;
 
 private:
-    DataObserver::Ptr
-    configureObservers(const connectivity::IMqttClient::Ptr& client,
-                       const Poco::Util::AbstractConfiguration& config);
+    void
+    createDatabase(const Poco::Util::AbstractConfiguration& config);
+
+    void
+    createObserver(const connectivity::IMqttClient::Ptr& client,
+                   const Poco::Util::AbstractConfiguration& config);
 
 private:
-    DataStorage::Ptr _storage;
+    IDataStorage::Ptr _storage;
     DataObserver::Ptr _observer;
 };
 
