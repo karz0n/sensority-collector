@@ -70,7 +70,7 @@ ConnectivitySubsystem::connectServer()
         if (config.has(property::ServerHost) && config.has(property::ServerPort)) {
             const auto host = config.getString(property::ServerHost);
             const auto port = config.getUInt(property::ServerPort);
-            LOG_DEBUG_F("Attempt connect to <%s:%d> server", host, port);
+            LOG_DEBUG_F("Attempt connect to <%s:%u> server", host, port);
             _mqttClient->connect(host, port, MqttDefaultKeepAlive);
         } else {
             LOG_ERROR("Unable connect due to missing necessary parameters");
