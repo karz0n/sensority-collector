@@ -6,6 +6,7 @@
 
 #include <string>
 #include <memory>
+#include <optional>
 
 namespace bs = boost::signals2;
 
