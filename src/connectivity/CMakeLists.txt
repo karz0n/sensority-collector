@@ -19,8 +19,12 @@ target_sources(
 set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME ${TARGET})
 
 target_link_libraries(
-    ${TARGET} PUBLIC Boost::headers PkgConfig::Mosquitto Poco::Foundation Poco::Util
+    ${TARGET} PUBLIC Boost::headers
+                     PkgConfig::Mosquitto
+                     Poco::Foundation
+                     Poco::Util
                      SensorityCollector::Common
+                     SensorityCollector::gRPC::DataAccessService
 )
 
 target_include_directories(

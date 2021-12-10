@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package DataAccess;
+
+message TimestampRange {
+  int64 from = 1;
+  int64 to = 2;
+}
+
+message TemperatureData {
+  float value = 1;
+  float raw = 2;
+  int64 timestamp = 3;
+}
+
+message BreathVocData {
+  float equivalent = 1;
+  float accuracy = 2;
+  int64 timestamp = 3;
+}
+
+message Co2Data {
+  float equivalent = 1;
+  float accuracy = 2;
+  int64 timestamp = 3;
+}
+
+message GasData {
+  float value = 1;
+  float percentage = 2;
+  float percentageAccuracy = 3;
+  int64 timestamp = 4;
+}
+
+message HumidityData {
+  float value = 1;
+  float raw = 2;
+  int64 timestamp = 3;
+}
+
+message IaqData {
+  float value = 1;
+  float accuracy = 2;
+  float staticValue = 3;
+  float staticValueAccuracy = 4;
+  int64 timestamp = 5;
+}
+
+message PressureData {
+  float value = 1;
+  int64 timestamp = 2;
+}
+
+message TvocData {
+  float value = 1;
+  int64 timestamp = 2;
+}
+
+service DataAccessService {
+  rpc getTemperatureData(TimestampRange)
+      returns (stream TemperatureData) {}
+  rpc getBreathVocData(TimestampRange)
+      returns (stream BreathVocData) {}
+  rpc getCo2Data(TimestampRange)
+      returns (stream Co2Data) {}
+  rpc getGasData(TimestampRange)
+      returns (stream GasData) {}
+  rpc getHumidityData(TimestampRange)
+      returns (stream HumidityData) {}
+  rpc getIaqData(TimestampRange)
+      returns (stream IaqData) {}
+  rpc getPressureData(TimestampRange)
+      returns (stream PressureData) {}
+  rpc getTvocData(TimestampRange)
+      returns (stream TvocData) {}
+}

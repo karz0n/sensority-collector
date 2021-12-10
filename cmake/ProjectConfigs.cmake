@@ -20,6 +20,8 @@ endif()
 include(AddPoco)
 include(AddMosquitto)
 include(AddBoost)
+include(AddProtobuf)
+include(AddGrpc)
 
 if (DEFINED CMAKE_TOOLCHAIN_FILE)
     message(STATUS "Using toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
