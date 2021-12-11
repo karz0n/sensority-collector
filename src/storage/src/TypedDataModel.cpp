@@ -5,11 +5,11 @@
 namespace storage {
 
 template<>
-class TypedDataModel<TempData>;
+class TypedDataModel<TemperatureData>;
 template<>
-class TypedDataModel<eCo2Data>;
+class TypedDataModel<Co2Data>;
 template<>
-class TypedDataModel<eBreathVocData>;
+class TypedDataModel<BreathVocData>;
 template<>
 class TypedDataModel<GasData>;
 template<>

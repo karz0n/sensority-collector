@@ -1,11 +1,10 @@
-#include "storage/accessor/eBreathVocDataAccessor.hpp"
+#include "storage/accessor/Co2DataAccessor.hpp"
 
 #include "common/Logger.hpp"
 #include "common/Utils.hpp"
-#include "storage/model/eBreathVocDataModel.hpp"
+#include "storage/model/Co2DataModel.hpp"
 
 #include <Poco/Data/Transaction.h>
-#include <Poco/DateTime.h>
 
 using Poco::Data::Session;
 using Poco::Data::Statement;
@@ -15,16 +14,16 @@ using namespace Poco::Data::Keywords;
 
 namespace storage {
 
-eBreathVocDataAccessor::eBreathVocDataAccessor(IDataStorage::Ptr storage)
+Co2DataAccessor::Co2DataAccessor(IDataStorage::Ptr storage)
     : _storage{std::move(storage)}
 {
 }
 
 void
-eBreathVocDataAccessor::put(const std::string& input, PutCallback callback)
+Co2DataAccessor::put(const std::string& input, PutCallback callback)
 {
     try {
-        if (auto model = std::make_unique<eBreathVocDataModel>(); model->parse(input)) {
+        if (auto model = std::make_unique<Co2DataModel>(); model->parse(input)) {
             auto job = std::make_unique<PutDataJob>(std::move(model), std::move(callback));
             _storage->process(std::move(job));
         } else {
@@ -38,12 +37,12 @@ eBreathVocDataAccessor::put(const std::string& input, PutCallback callback)
 }
 
 void
-eBreathVocDataAccessor::get(int64_t from, int64_t to, GetCallback callback)
+Co2DataAccessor::get(int64_t from, int64_t to, GetCallback callback)
 {
     _storage->process(std::make_unique<GetDataJob>(from, to, std::move(callback)));
 }
 
-eBreathVocDataAccessor::GetDataJob::GetDataJob(int64_t from, int64_t to, GetCallback callback)
+Co2DataAccessor::GetDataJob::GetDataJob(int64_t from, int64_t to, GetCallback callback)
     : _from{from}
     , _to{to}
     , _callback{std::move(callback)}
@@ -51,15 +50,15 @@ eBreathVocDataAccessor::GetDataJob::GetDataJob(int64_t from, int64_t to, GetCall
 }
 
 void
-eBreathVocDataAccessor::GetDataJob::run(Poco::Data::Session& session)
+Co2DataAccessor::GetDataJob::run(Poco::Data::Session& session)
 {
-    static const auto SqlTemplate{"SELECT Equivalent,Accuracy,Timestamp FROM eBreathVocData "
+    static const auto SqlTemplate{"SELECT Equivalent,Accuracy,Timestamp FROM Co2Data "
                                   "WHERE Timestamp>=%ld AND Timestamp<=%ld ORDER BY Timestamp"};
 
     try {
         Statement select{session};
 
-        eBreathVocData data;
+        Co2Data data;
         // clang-format off
         select << Poco::format(SqlTemplate, _from, _to),
             into(data.equivalent),
@@ -68,7 +67,7 @@ eBreathVocDataAccessor::GetDataJob::run(Poco::Data::Session& session)
             range(0, 1);
         // clang-format on
 
-        auto model = std::make_shared<eBreathVocDataModel>();
+        auto model = std::make_shared<Co2DataModel>();
         while (!select.done()) {
             if (select.execute() > 0) {
                 model->add(data);
@@ -82,21 +81,21 @@ eBreathVocDataAccessor::GetDataJob::run(Poco::Data::Session& session)
     }
 }
 
-eBreathVocDataAccessor::PutDataJob::PutDataJob(IDataModel::Ptr model, PutCallback callback)
+Co2DataAccessor::PutDataJob::PutDataJob(IDataModel::Ptr model, PutCallback callback)
     : _model{std::move(model)}
     , _callback{std::move(callback)}
 {
 }
 
 void
-eBreathVocDataAccessor::PutDataJob::run(Session& session)
+Co2DataAccessor::PutDataJob::run(Session& session)
 {
-    static const auto SqlTemplate = "INSERT INTO eBreathVocData VALUES (?,?,?)";
+    static const auto SqlTemplate = "INSERT INTO Co2Data VALUES (?,?,?)";
 
     try {
         Transaction transaction{session, true};
-        poco_assert_dbg(_model->typeIs<eBreathVocDataModel>());
-        auto& model = _model->castTo<eBreathVocDataModel>();
+        poco_assert_dbg(_model->typeIs<Co2DataModel>());
+        auto& model = _model->castTo<Co2DataModel>();
         for (auto&& value : model) {
             // clang-format off
             session << SqlTemplate,

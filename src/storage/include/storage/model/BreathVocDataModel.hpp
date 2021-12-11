@@ -3,14 +3,10 @@
 #include "storage/TypedDataModel.hpp"
 #include "storage/DataTypes.hpp"
 
-#include <memory>
-
 namespace storage {
 
-class TempDataModel : public TypedDataModel<TempData> {
+class BreathVocDataModel : public TypedDataModel<BreathVocData> {
 public:
-    using Ptr = std::shared_ptr<TempDataModel>;
-
     [[nodiscard]] bool
     parse(const std::string& input) override;
 
@@ -19,10 +15,10 @@ public:
 
 private:
     bool
-    parseItem(Poco::JSON::Object::Ptr object, TempData& data) override;
+    parseItem(Poco::JSON::Object::Ptr object, BreathVocData& data) override;
 
     Poco::JSON::Object::Ptr
-    stringifyItem(const TempData& value) override;
+    stringifyItem(const BreathVocData& value) override;
 };
 
 } // namespace storage

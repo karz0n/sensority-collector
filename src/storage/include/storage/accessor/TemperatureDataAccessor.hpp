@@ -6,9 +6,9 @@
 
 namespace storage {
 
-class eBreathVocDataAccessor final : public DataAccessor {
+class TemperatureDataAccessor : public DataAccessor {
 public:
-    explicit eBreathVocDataAccessor(IDataStorage::Ptr storage);
+    explicit TemperatureDataAccessor(IDataStorage::Ptr storage);
 
     void
     put(const std::string& input, PutCallback callback) override;

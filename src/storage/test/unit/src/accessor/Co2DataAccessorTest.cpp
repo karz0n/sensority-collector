@@ -2,8 +2,8 @@
 #include <gmock/gmock.h>
 
 #include "storage/DataStorage.hpp"
-#include "storage/model/eBreathVocDataModel.hpp"
-#include "storage/accessor/eBreathVocDataAccessor.hpp"
+#include "storage/accessor/Co2DataAccessor.hpp"
+#include "storage/model/Co2DataModel.hpp"
 #include "tests/Waiter.hpp"
 
 using namespace testing;
@@ -11,14 +11,14 @@ using namespace storage;
 
 using namespace std::chrono_literals;
 
-class eBreathVocDataAccessorTest : public Test {
+class Co2DataAccessorTest : public Test {
 public:
     const std::string Values{R"([
         {"equivalent": 120.0, "accuracy": 0.01},
         {"equivalent": 130.0, "accuracy": 0.02}
     ])"};
 
-    eBreathVocDataAccessorTest()
+    Co2DataAccessorTest()
         : storage{std::make_shared<DataStorage>()}
         , accessor{storage}
     {
@@ -50,17 +50,17 @@ public:
 
 public:
     DataStorage::Ptr storage;
-    eBreathVocDataAccessor accessor;
+    Co2DataAccessor accessor;
 };
 
-static Matcher<eBreathVocData>
+static Matcher<Co2Data>
 matchTo(float equivalent, float accuracy)
 {
-    return AllOf(Field(&eBreathVocData::equivalent, FloatEq(equivalent)),
-                 Field(&eBreathVocData::accuracy, FloatEq(accuracy)));
+    return AllOf(Field(&Co2Data::equivalent, FloatEq(equivalent)),
+                 Field(&Co2Data::accuracy, FloatEq(accuracy)));
 }
 
-TEST_F(eBreathVocDataAccessorTest, Store)
+TEST_F(Co2DataAccessorTest, Store)
 {
     Waiter waiter;
 
@@ -85,7 +85,7 @@ TEST_F(eBreathVocDataAccessorTest, Store)
     });
     ASSERT_TRUE(waiter.waitFor(3s, [&]() { return safeGuard; }));
 
-    ASSERT_TRUE(dataModel->typeIs<eBreathVocDataModel>());
-    const auto& model = dataModel->castTo<const eBreathVocDataModel>();
+    ASSERT_TRUE(dataModel->typeIs<Co2DataModel>());
+    const auto& model = dataModel->castTo<const Co2DataModel>();
     EXPECT_THAT(model, ElementsAre(matchTo(120.0, 0.01), matchTo(130.0, 0.02)));
 }

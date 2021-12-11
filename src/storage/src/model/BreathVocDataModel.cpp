@@ -1,25 +1,27 @@
-#include "storage/model/eCo2DataModel.hpp"
+#include "storage/model/BreathVocDataModel.hpp"
 
 #include "common/Logger.hpp"
+
+#include <Poco/Timestamp.h>
 
 using Poco::Timestamp;
 
 namespace storage {
 
 bool
-eCo2DataModel::parse(const std::string& input)
+BreathVocDataModel::parse(const std::string& input)
 {
     return parseArray(input);
 }
 
 std::string
-eCo2DataModel::stringify() const
+BreathVocDataModel::stringify() const
 {
     return stringifyArray();
 }
 
 bool
-eCo2DataModel::parseItem(Poco::JSON::Object::Ptr object, eCo2Data& data)
+BreathVocDataModel::parseItem(Poco::JSON::Object::Ptr object, BreathVocData& data)
 {
     poco_assert_dbg(object);
 
@@ -31,12 +33,11 @@ eCo2DataModel::parseItem(Poco::JSON::Object::Ptr object, eCo2Data& data)
         LOG_ERROR(e.displayText());
         return false;
     }
-
     return true;
 }
 
 Poco::JSON::Object::Ptr
-eCo2DataModel::stringifyItem(const eCo2Data& value)
+BreathVocDataModel::stringifyItem(const BreathVocData& value)
 {
     return {};
 }

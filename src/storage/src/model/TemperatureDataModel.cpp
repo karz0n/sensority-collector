@@ -1,4 +1,4 @@
-#include "storage/model/TempDataModel.hpp"
+#include "storage/model/TemperatureDataModel.hpp"
 
 #include "common/Logger.hpp"
 
@@ -7,19 +7,19 @@
 namespace storage {
 
 bool
-TempDataModel::parse(const std::string& input)
+TemperatureDataModel::parse(const std::string& input)
 {
     return parseArray(input);
 }
 
 std::string
-TempDataModel::stringify() const
+TemperatureDataModel::stringify() const
 {
     return stringifyArray();
 }
 
 bool
-TempDataModel::parseItem(Poco::JSON::Object::Ptr object, TempData& data)
+TemperatureDataModel::parseItem(Poco::JSON::Object::Ptr object, TemperatureData& data)
 {
     poco_assert_dbg(object);
 
@@ -36,7 +36,7 @@ TempDataModel::parseItem(Poco::JSON::Object::Ptr object, TempData& data)
 }
 
 Poco::JSON::Object::Ptr
-TempDataModel::stringifyItem(const TempData& value)
+TemperatureDataModel::stringifyItem(const TemperatureData& value)
 {
     return {};
 }

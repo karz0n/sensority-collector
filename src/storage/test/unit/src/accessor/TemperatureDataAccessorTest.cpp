@@ -2,8 +2,8 @@
 #include <gmock/gmock.h>
 
 #include "storage/DataStorage.hpp"
-#include "storage/accessor/eCo2DataAccessor.hpp"
-#include "storage/model/eCo2DataModel.hpp"
+#include "storage/model/TemperatureDataModel.hpp"
+#include "storage/accessor/TemperatureDataAccessor.hpp"
 #include "tests/Waiter.hpp"
 
 using namespace testing;
@@ -11,14 +11,14 @@ using namespace storage;
 
 using namespace std::chrono_literals;
 
-class eCo2DataAccessorTest : public Test {
+class TemperatureDataAccessorTest : public Test {
 public:
     const std::string Values{R"([
-        {"equivalent": 120.0, "accuracy": 0.01},
-        {"equivalent": 130.0, "accuracy": 0.02}
+        {"value": 13.5, "raw": 14.7},
+        {"value": 11.5, "raw": 11.7}
     ])"};
 
-    eCo2DataAccessorTest()
+    TemperatureDataAccessorTest()
         : storage{std::make_shared<DataStorage>()}
         , accessor{storage}
     {
@@ -50,17 +50,16 @@ public:
 
 public:
     DataStorage::Ptr storage;
-    eCo2DataAccessor accessor;
+    TemperatureDataAccessor accessor;
 };
 
-static Matcher<eCo2Data>
-matchTo(float equivalent, float accuracy)
+static Matcher<TemperatureData>
+matchTo(float value, float raw)
 {
-    return AllOf(Field(&eCo2Data::equivalent, FloatEq(equivalent)),
-                 Field(&eCo2Data::accuracy, FloatEq(accuracy)));
+    return AllOf(Field(&TemperatureData::value, FloatEq(value)), Field(&TemperatureData::raw, FloatEq(raw)));
 }
 
-TEST_F(eCo2DataAccessorTest, Store)
+TEST_F(TemperatureDataAccessorTest, Store)
 {
     Waiter waiter;
 
@@ -85,7 +84,7 @@ TEST_F(eCo2DataAccessorTest, Store)
     });
     ASSERT_TRUE(waiter.waitFor(3s, [&]() { return safeGuard; }));
 
-    ASSERT_TRUE(dataModel->typeIs<eCo2DataModel>());
-    const auto& model = dataModel->castTo<const eCo2DataModel>();
-    EXPECT_THAT(model, ElementsAre(matchTo(120.0, 0.01), matchTo(130.0, 0.02)));
+    ASSERT_TRUE(dataModel->typeIs<TemperatureDataModel>());
+    const auto& model = dataModel->castTo<const TemperatureDataModel>();
+    EXPECT_THAT(model, ElementsAre(matchTo(13.5, 14.7), matchTo(11.5, 11.7)));
 }

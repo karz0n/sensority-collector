@@ -15,13 +15,13 @@
 #include "storage/CompositeDataObserver.hpp"
 #include "storage/SensorDataObserver.hpp"
 #include "storage/DataStorage.hpp"
-#include "storage/accessor/eBreathVocDataAccessor.hpp"
-#include "storage/accessor/eCo2DataAccessor.hpp"
+#include "storage/accessor/BreathVocDataAccessor.hpp"
+#include "storage/accessor/Co2DataAccessor.hpp"
 #include "storage/accessor/GasDataAccessor.hpp"
 #include "storage/accessor/HumidityDataAccessor.hpp"
 #include "storage/accessor/IaqDataAccessor.hpp"
 #include "storage/accessor/PressureDataAccessor.hpp"
-#include "storage/accessor/TempDataAccessor.hpp"
+#include "storage/accessor/TemperatureDataAccessor.hpp"
 #include "storage/accessor/TvocDataAccessor.hpp"
 
 #include <Poco/Util/Application.h>
@@ -103,7 +103,7 @@ StorageSubsystem::createObserver(const IMqttClient::Ptr& client,
 {
     _observer = std::make_shared<CompositeDataObserver>();
 
-    auto accessor1 = std::make_unique<TempDataAccessor>(_storage);
+    auto accessor1 = std::make_unique<TemperatureDataAccessor>(_storage);
     const auto topic1 = config.getString(property::DataTopicsTopic1, topic::Topic1);
     _observer->add(SensorDataObserver::create(client, topic1, std::move(accessor1)));
     LOG_DEBUG_F("Register on topic1 with <%s> name", topic1);
@@ -128,12 +128,12 @@ StorageSubsystem::createObserver(const IMqttClient::Ptr& client,
     _observer->add(SensorDataObserver::create(client, topic5, std::move(accessor5)));
     LOG_DEBUG_F("Register on topic5 with <%s> name", topic5);
 
-    auto accessor6 = std::make_unique<eCo2DataAccessor>(_storage);
+    auto accessor6 = std::make_unique<Co2DataAccessor>(_storage);
     const auto topic6 = config.getString(property::DataTopicsTopic6, topic::Topic6);
     _observer->add(SensorDataObserver::create(client, topic6, std::move(accessor6)));
     LOG_DEBUG_F("Register on topic6 with <%s> name", topic6);
 
-    auto accessor7 = std::make_unique<eBreathVocDataAccessor>(_storage);
+    auto accessor7 = std::make_unique<BreathVocDataAccessor>(_storage);
     const auto topic7 = config.getString(property::DataTopicsTopic7, topic::Topic7);
     _observer->add(SensorDataObserver::create(client, topic7, std::move(accessor7)));
     LOG_DEBUG_F("Register on topic7 with <%s> name", topic7);

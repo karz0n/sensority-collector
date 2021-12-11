@@ -10,8 +10,8 @@ using Poco::Data::Connector;
 using namespace Poco::Data::Keywords;
 
 // clang-format off
-static const std::string_view TempDataDefinition{
-    "CREATE TABLE IF NOT EXISTS TempData (Value REAL,Raw REAL,Timestamp INTEGER)"
+static const std::string_view TemperatureDataDefinition{
+    "CREATE TABLE IF NOT EXISTS TemperatureData (Value REAL,Raw REAL,Timestamp INTEGER)"
 };
 static const std::string_view HumidityDataDefinition{
     "CREATE TABLE IF NOT EXISTS HumidityData (Value REAL,Raw REAL,Timestamp INTEGER)"
@@ -25,11 +25,11 @@ static const std::string_view IaqDataDefinition{
 static const std::string_view GasDataDefinition {
     "CREATE TABLE IF NOT EXISTS GasData (Value REAL,Percentage REAL,PercentageAccuracy REAL,Timestamp INTEGER)"
 };
-static const std::string_view eCo2DataDefinition {
-    "CREATE TABLE IF NOT EXISTS eCo2Data (Equivalent REAL,Accuracy REAL,Timestamp INTEGER)"
+static const std::string_view Co2DataDefinition {
+    "CREATE TABLE IF NOT EXISTS Co2Data (Equivalent REAL,Accuracy REAL,Timestamp INTEGER)"
 };
-static const std::string_view eBreathVocDataDefinition {
-    "CREATE TABLE IF NOT EXISTS eBreathVocData (Equivalent REAL,Accuracy REAL,Timestamp INTEGER)"
+static const std::string_view BreathVocDataDefinition {
+    "CREATE TABLE IF NOT EXISTS BreathVocData (Equivalent REAL,Accuracy REAL,Timestamp INTEGER)"
 };
 static const std::string_view TvocDataDefinition {
     "CREATE TABLE IF NOT EXISTS TvocData (Value REAL,Timestamp INTEGER)"
@@ -56,13 +56,13 @@ DataStorage::setUp()
         throw Poco::RuntimeException{"Thread is already active"};
     }
 
-    _session << TempDataDefinition, now;
+    _session << TemperatureDataDefinition, now;
     _session << HumidityDataDefinition, now;
     _session << PressureDataDefinition, now;
     _session << IaqDataDefinition, now;
     _session << GasDataDefinition, now;
-    _session << eCo2DataDefinition, now;
-    _session << eBreathVocDataDefinition, now;
+    _session << Co2DataDefinition, now;
+    _session << BreathVocDataDefinition, now;
     _session << TvocDataDefinition, now;
 
     _active = true;

@@ -2,8 +2,8 @@
 #include <gmock/gmock.h>
 
 #include "storage/DataStorage.hpp"
-#include "storage/model/TempDataModel.hpp"
-#include "storage/accessor/TempDataAccessor.hpp"
+#include "storage/model/BreathVocDataModel.hpp"
+#include "storage/accessor/BreathVocDataAccessor.hpp"
 #include "tests/Waiter.hpp"
 
 using namespace testing;
@@ -11,14 +11,14 @@ using namespace storage;
 
 using namespace std::chrono_literals;
 
-class TempDataAccessorTest : public Test {
+class BreathVocDataAccessorTest : public Test {
 public:
     const std::string Values{R"([
-        {"value": 13.5, "raw": 14.7},
-        {"value": 11.5, "raw": 11.7}
+        {"equivalent": 120.0, "accuracy": 0.01},
+        {"equivalent": 130.0, "accuracy": 0.02}
     ])"};
 
-    TempDataAccessorTest()
+    BreathVocDataAccessorTest()
         : storage{std::make_shared<DataStorage>()}
         , accessor{storage}
     {
@@ -50,16 +50,17 @@ public:
 
 public:
     DataStorage::Ptr storage;
-    TempDataAccessor accessor;
+    BreathVocDataAccessor accessor;
 };
 
-static Matcher<TempData>
-matchTo(float value, float raw)
+static Matcher<BreathVocData>
+matchTo(float equivalent, float accuracy)
 {
-    return AllOf(Field(&TempData::value, FloatEq(value)), Field(&TempData::raw, FloatEq(raw)));
+    return AllOf(Field(&BreathVocData::equivalent, FloatEq(equivalent)),
+                 Field(&BreathVocData::accuracy, FloatEq(accuracy)));
 }
 
-TEST_F(TempDataAccessorTest, Store)
+TEST_F(BreathVocDataAccessorTest, Store)
 {
     Waiter waiter;
 
@@ -84,7 +85,7 @@ TEST_F(TempDataAccessorTest, Store)
     });
     ASSERT_TRUE(waiter.waitFor(3s, [&]() { return safeGuard; }));
 
-    ASSERT_TRUE(dataModel->typeIs<TempDataModel>());
-    const auto& model = dataModel->castTo<const TempDataModel>();
-    EXPECT_THAT(model, ElementsAre(matchTo(13.5, 14.7), matchTo(11.5, 11.7)));
+    ASSERT_TRUE(dataModel->typeIs<BreathVocDataModel>());
+    const auto& model = dataModel->castTo<const BreathVocDataModel>();
+    EXPECT_THAT(model, ElementsAre(matchTo(120.0, 0.01), matchTo(130.0, 0.02)));
 }

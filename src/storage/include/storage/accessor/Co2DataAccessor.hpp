@@ -6,9 +6,9 @@
 
 namespace storage {
 
-class eCo2DataAccessor final : public DataAccessor {
+class Co2DataAccessor final : public DataAccessor {
 public:
-    explicit eCo2DataAccessor(IDataStorage::Ptr storage);
+    explicit Co2DataAccessor(IDataStorage::Ptr storage);
 
     void
     put(const std::string& input, PutCallback callback) override;

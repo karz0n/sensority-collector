@@ -1,8 +1,8 @@
-#include "storage/accessor/TempDataAccessor.hpp"
+#include "storage/accessor/TemperatureDataAccessor.hpp"
 
 #include "common/Logger.hpp"
 #include "common/Utils.hpp"
-#include "storage/model/TempDataModel.hpp"
+#include "storage/model/TemperatureDataModel.hpp"
 
 #include <Poco/Data/Transaction.h>
 
@@ -14,16 +14,16 @@ using namespace Poco::Data::Keywords;
 
 namespace storage {
 
-TempDataAccessor::TempDataAccessor(IDataStorage::Ptr storage)
+TemperatureDataAccessor::TemperatureDataAccessor(IDataStorage::Ptr storage)
     : _storage{std::move(storage)}
 {
 }
 
 void
-TempDataAccessor::put(const std::string& input, PutCallback callback)
+TemperatureDataAccessor::put(const std::string& input, PutCallback callback)
 {
     try {
-        if (auto model = std::make_unique<TempDataModel>(); model->parse(input)) {
+        if (auto model = std::make_unique<TemperatureDataModel>(); model->parse(input)) {
             auto job = std::make_unique<PutDataJob>(std::move(model), std::move(callback));
             _storage->process(std::move(job));
         } else {
@@ -37,12 +37,12 @@ TempDataAccessor::put(const std::string& input, PutCallback callback)
 }
 
 void
-TempDataAccessor::get(int64_t from, int64_t to, GetCallback callback)
+TemperatureDataAccessor::get(int64_t from, int64_t to, GetCallback callback)
 {
     _storage->process(std::make_unique<GetDataJob>(from, to, std::move(callback)));
 }
 
-TempDataAccessor::GetDataJob::GetDataJob(int64_t from, int64_t to, GetCallback callback)
+TemperatureDataAccessor::GetDataJob::GetDataJob(int64_t from, int64_t to, GetCallback callback)
     : _from{from}
     , _to{to}
     , _callback{std::move(callback)}
@@ -50,15 +50,15 @@ TempDataAccessor::GetDataJob::GetDataJob(int64_t from, int64_t to, GetCallback c
 }
 
 void
-TempDataAccessor::GetDataJob::run(Poco::Data::Session& session)
+TemperatureDataAccessor::GetDataJob::run(Poco::Data::Session& session)
 {
-    static const auto SqlTemplate{"SELECT Value,Raw,Timestamp FROM TempData "
+    static const auto SqlTemplate{"SELECT Value,Raw,Timestamp FROM TemperatureData "
                                   "WHERE Timestamp>=%ld AND Timestamp<=%ld ORDER BY Timestamp"};
 
     try {
         Statement select{session};
 
-        TempData data;
+        TemperatureData data;
         // clang-format off
         select << Poco::format(SqlTemplate, _from, _to),
             into(data.value),
@@ -67,7 +67,7 @@ TempDataAccessor::GetDataJob::run(Poco::Data::Session& session)
             range(0, 1);
         // clang-format on
 
-        auto model = std::make_shared<TempDataModel>();
+        auto model = std::make_shared<TemperatureDataModel>();
         while (!select.done()) {
             if (select.execute() > 0) {
                 model->add(data);
@@ -81,21 +81,21 @@ TempDataAccessor::GetDataJob::run(Poco::Data::Session& session)
     }
 }
 
-TempDataAccessor::PutDataJob::PutDataJob(IDataModel::Ptr model, PutCallback callback)
+TemperatureDataAccessor::PutDataJob::PutDataJob(IDataModel::Ptr model, PutCallback callback)
     : _model{std::move(model)}
     , _callback{std::move(callback)}
 {
 }
 
 void
-TempDataAccessor::PutDataJob::run(Session& session)
+TemperatureDataAccessor::PutDataJob::run(Session& session)
 {
-    static const auto SqlTemplate = "INSERT INTO TempData VALUES (?,?,?)";
+    static const auto SqlTemplate = "INSERT INTO TemperatureData VALUES (?,?,?)";
 
     try {
         Transaction transaction{session, true};
-        poco_assert_dbg(_model->typeIs<TempDataModel>());
-        auto& model = _model->castTo<TempDataModel>();
+        poco_assert_dbg(_model->typeIs<TemperatureDataModel>());
+        auto& model = _model->castTo<TemperatureDataModel>();
         for (auto&& value : model) {
             // clang-format off
             session << SqlTemplate,

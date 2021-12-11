@@ -4,19 +4,19 @@
 
 namespace storage {
 
-struct TempData {
+struct TemperatureData {
     float value{};
     float raw{};
     int64_t timestamp{};
 };
 
-struct eCo2Data {
+struct Co2Data {
     float equivalent{};
     float accuracy{};
     int64_t timestamp{};
 };
 
-struct eBreathVocData {
+struct BreathVocData {
     float equivalent{};
     float accuracy{};
     int64_t timestamp{};
@@ -53,4 +53,4 @@ struct TvocData {
     int64_t timestamp{};
 };
 
-}
+} // namespace storage

@@ -7,8 +7,8 @@ inline constexpr auto Topic2 = "pressure";
 inline constexpr auto Topic3 = "gas";
 inline constexpr auto Topic4 = "humidity";
 inline constexpr auto Topic5 = "iaq";
-inline constexpr auto Topic6 = "eCO2";
-inline constexpr auto Topic7 = "eVOC";
+inline constexpr auto Topic6 = "Co2";
+inline constexpr auto Topic7 = "BreathVOC";
 inline constexpr auto Topic8 = "TVOC";
 
 } // namespace topic

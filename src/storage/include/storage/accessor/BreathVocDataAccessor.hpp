@@ -6,9 +6,9 @@
 
 namespace storage {
 
-class TempDataAccessor : public DataAccessor {
+class BreathVocDataAccessor final : public DataAccessor {
 public:
-    explicit TempDataAccessor(IDataStorage::Ptr storage);
+    explicit BreathVocDataAccessor(IDataStorage::Ptr storage);
 
     void
     put(const std::string& input, PutCallback callback) override;

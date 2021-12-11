@@ -6,22 +6,22 @@ target_sources(
     ${TARGET}
     PUBLIC "${CMAKE_CURRENT_LIST_DIR}/src/SensorDataObserverTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/CompositeDataObserverTest.cpp"
-           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/eBreathVocDataAccessorTest.cpp"
-           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/eCo2DataAccessorTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/BreathVocDataAccessorTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/Co2DataAccessorTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/accessor/GasDataAccessorTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/accessor/HumidityDataAccessorTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/accessor/IaqDataAccessorTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/accessor/PressureDataAccessorTest.cpp"
-           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/TempDataAccessorTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/accessor/TemperatureDataAccessorTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/accessor/TvocDataAccessorTest.cpp"
-           "${CMAKE_CURRENT_LIST_DIR}/src/model/eCo2DataModelTest.cpp"
-           "${CMAKE_CURRENT_LIST_DIR}/src/model/eBreathVocDataModelTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/model/Co2DataModelTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/model/BreathVocDataModelTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/model/GasDataModelTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/model/HumidityDataModelTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/model/IaqDataModelTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/model/PressureDataModelTest.cpp"
            "${CMAKE_CURRENT_LIST_DIR}/src/model/TvocDataModelTest.cpp"
-           "${CMAKE_CURRENT_LIST_DIR}/src/model/TempDataModelTest.cpp"
+           "${CMAKE_CURRENT_LIST_DIR}/src/model/TemperatureDataModelTest.cpp"
 )
 
 set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME ${TARGET})
