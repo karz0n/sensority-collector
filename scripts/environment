@@ -1,0 +1,7 @@
+
+USERNAME=$USER
+USER_UID=$(id -u)
+USER_GID=$(id -g)
+
+SRC_IMAGE=my/sensority
+DEV_IMAGE=$SRC_IMAGE-dev

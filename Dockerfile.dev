@@ -1,15 +1,15 @@
-FROM my/sensority-dev
+FROM my/sensority
 
-RUN ( \
-    echo 'LogLevel DEBUG2'; \
-    echo 'PermitRootLogin yes'; \
-    echo 'PasswordAuthentication yes'; \
-    echo 'Subsystem sftp /usr/libexec/sftp-server'; \
-  ) > /etc/ssh/sshd-sensority-remote-dev \
-  && mkdir /run/sshd
+ARG USERNAME=user
+ARG UID=1000
+ARG GID=1000
 
-RUN useradd -m user && yes password | passwd user
-RUN usermod -s /bin/bash user
-RUN ssh-keygen -A
+RUN groupdel $USERNAME || true
+RUN userdel -r -f $USERNAME || true && rm -rf /home/$USERNAME
+RUN groupadd -f -g $GID $USERNAME
+RUN useradd -l -g $GID -u $UID -ms /bin/bash $USERNAME
+RUN echo $USERNAME:$USERNAME | chpasswd
+RUN echo '$USERNAME ALL=(ALL) NOPASSWD:SETENV: ALL' > /etc/sudoers.d/$USERNAME || true
 
-CMD ["/usr/sbin/sshd", "-D", "-e", "-f", "/etc/ssh/sshd-sensority-remote-dev"]
+USER $USERNAME
+CMD ["/bin/bash"]
