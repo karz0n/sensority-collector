@@ -15,31 +15,24 @@ using namespace Poco::Data::Keywords;
 namespace storage {
 
 TvocDataAccessor::TvocDataAccessor(IDataStorage::Ptr storage)
-    : _storage{std::move(storage)}
+    : DataAccessor{std::move(storage)}
 {
 }
 
-void
-TvocDataAccessor::put(const std::string& input, PutCallback callback)
+IDataJob::Ptr
+TvocDataAccessor::makePutJob(const std::string& input, PutCallback callback)
 {
-    try {
-        if (auto model = std::make_unique<TvocDataModel>(); model->parse(input)) {
-            auto job = std::make_unique<PutDataJob>(std::move(model), std::move(callback));
-            _storage->process(std::move(job));
-        } else {
-            LOG_ERROR("Failed to parse data");
-            invokeIf(callback, false);
-        }
-    } catch (const Poco::Exception& e) {
-        LOG_ERROR(e.displayText());
-        invokeIf(callback, false);
+    if (auto model = std::make_unique<TvocDataModel>(); model->parse(input)) {
+        return std::make_unique<PutDataJob>(std::move(model), std::move(callback));
+    } else {
+        throw std::runtime_error{"Failed to parse input for TvocDataModel"};
     }
 }
 
-void
-TvocDataAccessor::get(int64_t from, int64_t to, GetCallback callback)
+IDataJob::Ptr
+TvocDataAccessor::makeGetJob(int64_t from, int64_t to, GetCallback callback)
 {
-    _storage->process(std::make_unique<GetDataJob>(from, to, std::move(callback)));
+    return std::make_unique<GetDataJob>(from, to, std::move(callback));
 }
 
 TvocDataAccessor::GetDataJob::GetDataJob(int64_t from, int64_t to, GetCallback callback)
@@ -110,6 +103,5 @@ TvocDataAccessor::PutDataJob::run(Session& session)
         invokeIf(_callback, false);
     }
 }
-
 
 } // namespace storage

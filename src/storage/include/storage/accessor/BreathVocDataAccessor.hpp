@@ -10,12 +10,6 @@ class BreathVocDataAccessor final : public DataAccessor {
 public:
     explicit BreathVocDataAccessor(IDataStorage::Ptr storage);
 
-    void
-    put(const std::string& input, PutCallback callback) override;
-
-    void
-    get(int64_t from, int64_t to, GetCallback callback) override;
-
 private:
     class GetDataJob : public IDataJob {
     public:
@@ -43,7 +37,11 @@ private:
     };
 
 private:
-    IDataStorage::Ptr _storage;
+    IDataJob::Ptr
+    makePutJob(const std::string& input, PutCallback callback) override;
+
+    IDataJob::Ptr
+    makeGetJob(int64_t from, int64_t to, GetCallback callback) override;
 };
 
 } // namespace storage

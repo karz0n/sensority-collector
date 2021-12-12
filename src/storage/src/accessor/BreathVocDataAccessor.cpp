@@ -1,7 +1,7 @@
 #include "storage/accessor/BreathVocDataAccessor.hpp"
 
-#include "common/Logger.hpp"
 #include "common/Utils.hpp"
+#include "common/Logger.hpp"
 #include "storage/model/BreathVocDataModel.hpp"
 
 #include <Poco/Data/Transaction.h>
@@ -16,31 +16,24 @@ using namespace Poco::Data::Keywords;
 namespace storage {
 
 BreathVocDataAccessor::BreathVocDataAccessor(IDataStorage::Ptr storage)
-    : _storage{std::move(storage)}
+    : DataAccessor{std::move(storage)}
 {
 }
 
-void
-BreathVocDataAccessor::put(const std::string& input, PutCallback callback)
+IDataJob::Ptr
+BreathVocDataAccessor::makePutJob(const std::string& input, PutCallback callback)
 {
-    try {
-        if (auto model = std::make_unique<BreathVocDataModel>(); model->parse(input)) {
-            auto job = std::make_unique<PutDataJob>(std::move(model), std::move(callback));
-            _storage->process(std::move(job));
-        } else {
-            LOG_ERROR("Failed to parse data");
-            invokeIf(callback, false);
-        }
-    } catch (const Poco::Exception& e) {
-        LOG_ERROR(e.displayText());
-        invokeIf(callback, false);
+    if (auto model = std::make_unique<BreathVocDataModel>(); model->parse(input)) {
+        return std::make_unique<PutDataJob>(std::move(model), std::move(callback));
+    } else {
+        throw std::runtime_error{"Failed to parse input for BreathVocDataModel"};
     }
 }
 
-void
-BreathVocDataAccessor::get(int64_t from, int64_t to, GetCallback callback)
+IDataJob::Ptr
+BreathVocDataAccessor::makeGetJob(int64_t from, int64_t to, GetCallback callback)
 {
-    _storage->process(std::make_unique<GetDataJob>(from, to, std::move(callback)));
+    return std::make_unique<GetDataJob>(from, to, std::move(callback));
 }
 
 BreathVocDataAccessor::GetDataJob::GetDataJob(int64_t from, int64_t to, GetCallback callback)

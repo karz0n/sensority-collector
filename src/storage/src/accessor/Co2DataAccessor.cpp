@@ -1,7 +1,7 @@
 #include "storage/accessor/Co2DataAccessor.hpp"
 
-#include "common/Logger.hpp"
 #include "common/Utils.hpp"
+#include "common/Logger.hpp"
 #include "storage/model/Co2DataModel.hpp"
 
 #include <Poco/Data/Transaction.h>
@@ -15,31 +15,24 @@ using namespace Poco::Data::Keywords;
 namespace storage {
 
 Co2DataAccessor::Co2DataAccessor(IDataStorage::Ptr storage)
-    : _storage{std::move(storage)}
+    : DataAccessor{std::move(storage)}
 {
 }
 
-void
-Co2DataAccessor::put(const std::string& input, PutCallback callback)
+IDataJob::Ptr
+Co2DataAccessor::makePutJob(const std::string& input, PutCallback callback)
 {
-    try {
-        if (auto model = std::make_unique<Co2DataModel>(); model->parse(input)) {
-            auto job = std::make_unique<PutDataJob>(std::move(model), std::move(callback));
-            _storage->process(std::move(job));
-        } else {
-            LOG_ERROR("Failed to parse data");
-            invokeIf(callback, false);
-        }
-    } catch (const Poco::Exception& e) {
-        LOG_ERROR(e.displayText());
-        invokeIf(callback, false);
+    if (auto model = std::make_unique<Co2DataModel>(); model->parse(input)) {
+        return std::make_unique<PutDataJob>(std::move(model), std::move(callback));
+    } else {
+        throw std::runtime_error{"Failed to parse input for Co2DataModel"};
     }
 }
 
-void
-Co2DataAccessor::get(int64_t from, int64_t to, GetCallback callback)
+IDataJob::Ptr
+Co2DataAccessor::makeGetJob(int64_t from, int64_t to, GetCallback callback)
 {
-    _storage->process(std::make_unique<GetDataJob>(from, to, std::move(callback)));
+    return std::make_unique<GetDataJob>(from, to, std::move(callback));
 }
 
 Co2DataAccessor::GetDataJob::GetDataJob(int64_t from, int64_t to, GetCallback callback)

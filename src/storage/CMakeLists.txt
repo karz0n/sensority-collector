@@ -15,6 +15,7 @@ target_sources(
            "${CMAKE_CURRENT_LIST_DIR}/include/storage/DataTypes.hpp"
            "${CMAKE_CURRENT_LIST_DIR}/include/storage/IDataJob.hpp"
            "${CMAKE_CURRENT_LIST_DIR}/include/storage/IDataModel.hpp"
+           "${CMAKE_CURRENT_LIST_DIR}/include/storage/IDataAccessor.hpp"
            "${CMAKE_CURRENT_LIST_DIR}/include/storage/TypedDataModel.hpp"
            "${CMAKE_CURRENT_LIST_DIR}/include/storage/accessor/BreathVocDataAccessor.hpp"
            "${CMAKE_CURRENT_LIST_DIR}/include/storage/accessor/Co2DataAccessor.hpp"

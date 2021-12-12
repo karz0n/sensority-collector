@@ -1,8 +1,38 @@
 #include "storage/DataAccessor.hpp"
 
+#include "common/Logger.hpp"
+#include "common/Utils.hpp"
+
 #include <Poco/DateTime.h>
 
 namespace storage {
+
+DataAccessor::DataAccessor(IDataStorage::Ptr storage)
+    : _storage{std::move(storage)}
+{
+}
+
+void
+DataAccessor::put(const std::string& input, PutCallback callback)
+{
+    try {
+        _storage->process(makePutJob(input, std::move(callback)));
+    } catch (const std::exception& e) {
+        LOG_ERROR(e.what());
+        invokeIf(callback, false);
+    }
+}
+
+void
+DataAccessor::get(int64_t from, int64_t to, GetCallback callback)
+{
+    try {
+        _storage->process(makeGetJob(from, to, std::move(callback)));
+    } catch (const std::exception& e) {
+        LOG_ERROR(e.what());
+        invokeIf(callback, IDataModel::Ptr{}, false);
+    }
+}
 
 void
 DataAccessor::getForLastDay(GetCallback callback)

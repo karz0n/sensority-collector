@@ -15,31 +15,24 @@ using namespace Poco::Data::Keywords;
 namespace storage {
 
 PressureDataAccessor::PressureDataAccessor(IDataStorage::Ptr storage)
-    : _storage{std::move(storage)}
+    : DataAccessor{std::move(storage)}
 {
 }
 
-void
-PressureDataAccessor::put(const std::string& input, PutCallback callback)
+IDataJob::Ptr
+PressureDataAccessor::makePutJob(const std::string& input, PutCallback callback)
 {
-    try {
-        if (auto model = std::make_unique<PressureDataModel>(); model->parse(input)) {
-            auto job = std::make_unique<PutDataJob>(std::move(model), std::move(callback));
-            _storage->process(std::move(job));
-        } else {
-            LOG_ERROR("Failed to parse data");
-            invokeIf(callback, false);
-        }
-    } catch (const Poco::Exception& e) {
-        LOG_ERROR(e.displayText());
-        invokeIf(callback, false);
+    if (auto model = std::make_unique<PressureDataModel>(); model->parse(input)) {
+        return std::make_unique<PutDataJob>(std::move(model), std::move(callback));
+    } else {
+        throw std::runtime_error{"Failed to parse input for PressureDataModel"};
     }
 }
 
-void
-PressureDataAccessor::get(int64_t from, int64_t to, GetCallback callback)
+IDataJob::Ptr
+PressureDataAccessor::makeGetJob(int64_t from, int64_t to, GetCallback callback)
 {
-    _storage->process(std::make_unique<GetDataJob>(from, to, std::move(callback)));
+    return std::make_unique<GetDataJob>(from, to, std::move(callback));
 }
 
 PressureDataAccessor::GetDataJob::GetDataJob(int64_t from, int64_t to, GetCallback callback)
